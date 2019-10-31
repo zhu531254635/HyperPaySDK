@@ -19,7 +19,7 @@ class HyperpayTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid type value(base/all): foo');
 
-        $w->getHyperpay('深圳', 'foo');
+        $w->getHyperpay('合肥', 'foo');
 
         $this->fail('Failed to assert getHyperpay throw exception with invalid argument.');
     }
@@ -31,7 +31,7 @@ class HyperpayTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid response format: array');
 
-        $w->getHyperpay('深圳', 'base', 'array');
+        $w->getHyperpay('合肥', 'base', 'array');
 
         $this->fail('Failed to assert getHyperpay throw exception with invalid argument.');
     }
@@ -43,8 +43,8 @@ class HyperpayTest extends TestCase
         $client = \Mockery::mock(Client::class);
         $client->allows()->get('https://restapi.amap.com/v3/Hyperpay/HyperpayInfo', [
             'query' => [
-                'key' => 'a981cb7750aa6e4509fe7f473f5f4d98',
-                'city' => '深圳',
+                'key' => 'mock-key',
+                'city' => '合肥',
                 'output' => 'json',
                 'extensions' => 'base',
             ],
@@ -53,15 +53,15 @@ class HyperpayTest extends TestCase
         $w = \Mockery::mock(Hyperpay::class, ['mock-key'])->makePartial();
         $w->allows()->getHttpClient()->andReturn($client);
 
-        $this->assertSame(['success' => true], $w->getHyperpay('深圳'));
+        $this->assertSame(['success' => true], $w->getHyperpay('合肥'));
 
         // xml
         $response = new Response(200, [], '<hello>content</hello>');
         $client = \Mockery::mock(Client::class);
         $client->allows()->get('https://restapi.amap.com/v3/Hyperpay/HyperpayInfo', [
             'query' => [
-                'key' => 'a981cb7750aa6e4509fe7f473f5f4d98',
-                'city' => '深圳',
+                'key' => 'mock-key',
+                'city' => '合肥',
                 'extensions' => 'all',
                 'output' => 'xml',
             ],
@@ -70,7 +70,7 @@ class HyperpayTest extends TestCase
         $w = \Mockery::mock(Hyperpay::class, ['mock-key'])->makePartial();
         $w->allows()->getHttpClient()->andReturn($client);
 
-        $this->assertSame('<hello>content</hello>', $w->getHyperpay('深圳', 'all', 'xml'));
+        $this->assertSame('<hello>content</hello>', $w->getHyperpay('合肥', 'all', 'xml'));
     }
 
     public function testGetHyperpayWithGuzzleRuntimeException()
@@ -86,7 +86,7 @@ class HyperpayTest extends TestCase
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('request timeout');
 
-        $w->getHyperpay('深圳');
+        $w->getHyperpay('合肥');
     }
 
     public function testGetHttpClient()
